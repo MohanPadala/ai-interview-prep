@@ -11,14 +11,13 @@ const app = express();
 app.use(express.json());
 
 // Support both IPv4 loopback addresses and credentials
-app.use(
-  cors({
-    origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+const cors = require("cors");
+
+// Enable CORS for all origins (or restrict it to your Vercel URL)
+app.use(cors({
+  origin: "*", // Or replace with your exact Vercel frontend URL
+  credentials: true
+}));
 
 // 2. Connect to MongoDB
 connectDB();
