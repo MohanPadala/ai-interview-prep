@@ -10,34 +10,13 @@ const app = express();
 // 1. Core Middleware
 app.use(express.json());
 
-// 2. CORS
-const allowedOrigins = [
-  "http://localhost:5173",
-  "http://localhost:3000",
-];
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      // Allow requests with no origin (Postman, mobile apps, etc.)
-      if (!origin) return callback(null, true);
-
-      // Allow localhost and Vercel
-      if (
-        allowedOrigins.includes(origin) ||
-        origin.endsWith(".vercel.app")
-      ) {
-        return callback(null, true);
-      }
-
-      return callback(new Error("Not allowed by CORS"));
-    },
-
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+app.use(cors({
+  origin: true, // Automatically reflects the request origin and allows it
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
 
 // 3. Connect MongoDB
 connectDB();
