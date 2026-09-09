@@ -13,12 +13,26 @@ app.use(express.json());
 // Support both IPv4 loopback addresses and credentials
 const cors = require("cors");
 
-// Enable CORS for all origins (or restrict it to your Vercel URL)
-app.use(cors({
-  origin: "*", // Or replace with your exact Vercel frontend URL
-  credentials: true
-}));
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:3000"
+];
 
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like Postman or mobile apps)
+    if (!origin) return callback(null, true);
+    // Allow any Vercel deployment or localhost
+    if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.vercel.app')) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
 // 2. Connect to MongoDB
 connectDB();
 
